@@ -30,30 +30,7 @@ Fully restart `dsh web` (or Desktop Host) after install, then open the printed `
 ## Notes
 
 - Uninstalling this plugin does **not** remove an already-written SupaNexus provider or API key
-- Defaults point at production domains (`.ai` / `.io`); override `lines` in `cordis.patch.yml` for local backends
-
-## Optional config
-
-```yaml
-config:
-  lines:
-    - id: global
-      label: Global
-      origin: https://api.supanexus.ai
-      harnessOrigin: https://gateway-harness.supanexus.ai
-      pluginCatalogOrigin: https://gateway-client.supanexus.ai
-      consoleOrigin: https://console.supanexus.ai
-    - id: cn
-      label: 中国大陆
-      origin: https://api.supanexus.io
-      harnessOrigin: https://gateway-harness.supanexus.io
-      pluginCatalogOrigin: https://gateway-client.supanexus.io
-      consoleOrigin: https://console.supanexus.io
-  pinnedLine: ''
-  probeTimeoutMs: 2500
-```
-
-Brand and balance toggles are also available under Settings → Plugins.
+- Brand and balance toggles are available under Settings → Plugins
 
 ## License
 

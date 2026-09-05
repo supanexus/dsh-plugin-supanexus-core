@@ -30,30 +30,7 @@ dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.2.0
 ## 说明
 
 - 卸载本插件后，已写入的 SupaNexus 提供方与 API Key **仍会保留**
-- 默认线路指向生产域名（`.ai` / `.io`）；本机联调可自行改 `cordis.patch.yml` 中的 `lines`
-
-## 可选配置
-
-```yaml
-config:
-  lines:
-    - id: global
-      label: Global
-      origin: https://api.supanexus.ai
-      harnessOrigin: https://gateway-harness.supanexus.ai
-      pluginCatalogOrigin: https://gateway-client.supanexus.ai
-      consoleOrigin: https://console.supanexus.ai
-    - id: cn
-      label: 中国大陆
-      origin: https://api.supanexus.io
-      harnessOrigin: https://gateway-harness.supanexus.io
-      pluginCatalogOrigin: https://gateway-client.supanexus.io
-      consoleOrigin: https://console.supanexus.io
-  pinnedLine: ''
-  probeTimeoutMs: 2500
-```
-
-也可在设置 → 插件配置中调整品牌与余额显示。
+- 品牌与余额显示可在设置 → 插件配置中调整
 
 ## License
 
