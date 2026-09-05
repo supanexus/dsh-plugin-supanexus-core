@@ -1,0 +1,25 @@
+- insert:
+    - id: supanexus-core
+      name: '@supanexus/dsh-plugin-supanexus-core'
+      config:
+        lines:
+          - id: global
+            label: Global
+            origin: https://api.supanexus.ai
+            harnessOrigin: https://gateway-harness.supanexus.ai
+            pluginCatalogOrigin: https://gateway-client.supanexus.ai
+            consoleOrigin: https://console.supanexus.ai
+          - id: cn
+            label: 中国大陆
+            origin: https://api.supanexus.io
+            harnessOrigin: https://gateway-harness.supanexus.io
+            pluginCatalogOrigin: https://gateway-client.supanexus.io
+            consoleOrigin: https://console.supanexus.io
+        pinnedLine: ''
+        probeTimeoutMs: 2500
+        probeCacheTtlMs: 600000
+        deviceName: ''
+        pluginCatalogOrigin: ''
+        consoleOrigin: ''
+# Keep ui-brand-official enabled: showBrand=false unregisters our slots so DSH
+# official (or shell FishLogo / local-build fallbacks) show again.

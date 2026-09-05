@@ -1,0 +1,55 @@
+import type { Context as ClientContext } from '@deepseek-ai/cordis';
+import { type PluginCategoryItem, type PluginListingItem, type PluginToggleStatusEntry, type PluginUpgradeStatusEntry } from '../../shared/plugin-market-contract.ts';
+import type { InstallProgressState } from './install-progress.ts';
+import type { InstallTab } from './install-tab.ts';
+export interface UseSkillMarketOptions {
+    readonly ctx: ClientContext;
+    readonly locale: string | undefined;
+    readonly open: boolean;
+}
+export declare function useSkillMarket({ ctx, locale, open }: UseSkillMarketOptions): {
+    t: (key: import("./locales.ts").SkillMarketKey) => string;
+    loading: boolean;
+    items: readonly PluginListingItem[];
+    page: number;
+    hasNext: boolean;
+    keyword: string;
+    setKeyword: import("react").Dispatch<import("react").SetStateAction<string>>;
+    source: string;
+    setSource: import("react").Dispatch<import("react").SetStateAction<string>>;
+    layer: string;
+    setLayer: import("react").Dispatch<import("react").SetStateAction<string>>;
+    category: string;
+    setCategory: import("react").Dispatch<import("react").SetStateAction<string>>;
+    categories: readonly PluginCategoryItem[];
+    error: string | undefined;
+    installingCode: string | undefined;
+    uninstallingCode: string | undefined;
+    togglingPackage: string | undefined;
+    isOperating: boolean;
+    hasOperationModal: boolean;
+    installProgress: InstallProgressState | undefined;
+    installedNames: ReadonlySet<string>;
+    installTab: InstallTab;
+    setInstallTab: import("react").Dispatch<import("react").SetStateAction<InstallTab>>;
+    upgradeByCode: Readonly<Record<string, PluginUpgradeStatusEntry>>;
+    toggleByPackage: Readonly<Record<string, PluginToggleStatusEntry>>;
+    onSearch: () => void;
+    onInstall: (item: PluginListingItem) => void;
+    startInstall: () => void;
+    onUpgrade: (item: PluginListingItem) => void;
+    startUpgrade: () => void;
+    onUninstall: (item: PluginListingItem) => void;
+    startUninstall: () => void;
+    closeInstallProgress: () => void;
+    toggleInstallLog: () => void;
+    loadMore: () => void;
+    isInstalled: (item: PluginListingItem) => boolean;
+    canUninstall: (item: PluginListingItem) => boolean;
+    canToggle: (item: PluginListingItem) => boolean;
+    getToggleStatus: (item: PluginListingItem) => PluginToggleStatusEntry | undefined;
+    onToggle: (item: PluginListingItem, enabled: boolean) => void;
+    getUpgradeStatus: (item: PluginListingItem) => PluginUpgradeStatusEntry | undefined;
+};
+export type SkillMarketState = ReturnType<typeof useSkillMarket>;
+//# sourceMappingURL=useSkillMarket.d.ts.map

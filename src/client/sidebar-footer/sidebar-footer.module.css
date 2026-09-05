@@ -1,0 +1,9 @@
+/* Stacked sidebar footer: wallet above skill-market (parent footer is row flex). */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
