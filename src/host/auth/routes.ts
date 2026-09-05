@@ -12,7 +12,7 @@ import {
 } from '../../shared/auth-contract.ts'
 import { OAUTH_CALLBACK_PATH } from '../../shared/provider.ts'
 import type { Config } from '../config.ts'
-import { resolveLine } from '../line/resolver.ts'
+import { resolveAuthLine } from '../line/resolver.ts'
 import { ensureDeviceIdentity } from '../settings/device.ts'
 import {
   challengeFromVerifier,
@@ -72,7 +72,7 @@ export function registerAuthRoutes(ctx: Context, config: Config): void {
       try {
         const url = new URL(request.url)
         const locale = url.searchParams.get('locale') ?? undefined
-        const { winner } = await resolveLine(ctx, config, { force: true })
+        const { winner } = await resolveAuthLine(ctx, config)
         const verifier = generateVerifier()
         const challenge = challengeFromVerifier(verifier)
         const state = generateState()

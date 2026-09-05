@@ -44,7 +44,7 @@ export interface QuickSetupState {
   readonly reopenAuth: () => void
 }
 
-/** Quick-setup state machine: authorize → poll → write provider (line probe runs on host). */
+/** Quick-setup state machine: authorize → poll → write provider (auth line resolved on host). */
 export function useQuickSetup(options: UseQuickSetupOptions): QuickSetupState {
   const { ctx, locale } = options
   const [phase, setPhase] = useState<QuickSetupPhase>('idle')

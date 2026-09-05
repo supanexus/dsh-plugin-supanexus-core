@@ -2,6 +2,12 @@
 export interface SettingsCardCopy {
     readonly title: string;
     readonly description: string;
+    readonly region: string;
+    readonly regionHint: string;
+    readonly regionGlobal: string;
+    readonly regionCn: string;
+    readonly regionLocked: string;
+    readonly regionLoading: string;
     readonly showWallet: string;
     readonly showWalletHint: string;
     readonly showBrand: string;

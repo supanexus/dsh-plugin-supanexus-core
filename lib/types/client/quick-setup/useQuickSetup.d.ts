@@ -12,6 +12,6 @@ export interface QuickSetupState {
     readonly start: () => Promise<void>;
     readonly reopenAuth: () => void;
 }
-/** Quick-setup state machine: authorize → poll → write provider (line probe runs on host). */
+/** Quick-setup state machine: authorize → poll → write provider (auth line resolved on host). */
 export declare function useQuickSetup(options: UseQuickSetupOptions): QuickSetupState;
 //# sourceMappingURL=useQuickSetup.d.ts.map

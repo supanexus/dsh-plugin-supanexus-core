@@ -14,13 +14,13 @@ export function readShowBrand(scope: SettingsScope<SupaNexusUiSettings>): boolea
   return scope.getSnapshot().value?.showBrand ?? true
 }
 
-/** Active line id for .ai / .io site pick (`resolvedLine` → `pinnedLine` → `global`). */
+/** Active line id for .ai / .io site pick (`pinnedLine` → `resolvedLine` → `global`). */
 export function readActiveLineId(scope: SettingsScope<SupaNexusUiSettings>): string {
   const value = scope.getSnapshot().value
-  const resolved = value?.resolvedLine?.trim()
-  if (resolved !== undefined && resolved.length > 0) return resolved
   const pinned = value?.pinnedLine?.trim()
   if (pinned !== undefined && pinned.length > 0) return pinned
+  const resolved = value?.resolvedLine?.trim()
+  if (resolved !== undefined && resolved.length > 0) return resolved
   return 'global'
 }
 

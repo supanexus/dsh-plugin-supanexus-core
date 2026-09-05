@@ -9,7 +9,7 @@ SupaNexus 平台核心：品牌样式、OAuth 快速配置、双线路模型接�
 ## 安装
 
 ```bash
-dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.2.0
+dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.3.0
 ```
 
 安装后请**完全重启** `dsh web`（或 Desktop Host），并用打印的 `?token=` 地址打开。
@@ -17,7 +17,8 @@ dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.2.0
 ## 能做什么
 
 - **品牌**：侧栏 Logo/名称、对话区标识与浏览器标签页切换为 SupaNexus 样式（可在设置中关闭）
-- **快速配置**：设置 → 模型页底部一键授权；自动探测 Global / 中国大陆线路并写入模型提供方
+- **快速配置**：设置 → 模型页底部一键授权；按插件配置「访问区域」钉死 Global / 中国大陆线路（首次自动选最快）
+- **访问区域**：插件配置内可切换全球 / 中国大陆；授权、控制台、余额跟区域线；插件市场下载仍独立按网络探测
 - **应用插件**：侧栏「应用插件」浏览、安装、升级、卸载社区与运营插件
 - **余额入口**（可选）：侧栏余额默认关闭，可在设置 → 插件配置中开启
 

@@ -46,7 +46,7 @@ async function parseJson<T>(response: Response): Promise<T> {
   return body as T
 }
 
-/** Start OAuth flow; host silently probes lines before returning authorize URL. */
+/** Start OAuth flow; host resolves the pinned / auto region line. */
 export async function startAuth(locale?: string): Promise<AuthStartResponse> {
   const url = new URL(AUTH_START_PATH, window.location.origin)
   if (locale !== undefined && locale.length > 0) url.searchParams.set('locale', locale)

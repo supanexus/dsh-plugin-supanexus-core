@@ -6,6 +6,6 @@ export interface SupaNexusSettingsCardProps extends PropsRuntime<'settings.plugi
     readonly ctx: ClientContext;
     readonly scope: SettingsScope<SupaNexusUiSettings>;
 }
-/** Plugin-config card: toggle balance + brand visibility. */
+/** Plugin-config card: region + balance + brand visibility. */
 export declare function SupaNexusSettingsCard(props: SupaNexusSettingsCardProps): import("react").JSX.Element | null;
 //# sourceMappingURL=SupaNexusSettingsCard.d.ts.map

@@ -11,7 +11,7 @@ import {
   CREDENTIAL_REF,
   REFRESH_CREDENTIAL_REF,
 } from '../../shared/provider.ts'
-import { findLine, type SupaLine } from '../../shared/line.ts'
+import { type SupaLine } from '../../shared/line.ts'
 import {
   WALLET_ERROR,
   WALLET_PATH,
@@ -21,7 +21,7 @@ import {
   type WalletStatusResponse,
 } from '../../shared/wallet-contract.ts'
 import type { Config } from '../config.ts'
-import { resolveLine } from '../line/resolver.ts'
+import { resolveAuthLine } from '../line/resolver.ts'
 import { resolveConsoleOrigin } from '../plugin-market/catalog-origin.ts'
 import { readSettings } from '../settings/device.ts'
 import {
@@ -65,15 +65,16 @@ async function ensureAccessToken(
   ctx: Context,
   config: Config,
   locale: string | undefined,
-): Promise<{ accessToken: string; lineId: string }> {
-  const settings = readSettings(ctx)
+): Promise<{ accessToken: string; lineId: string; line: SupaLine }> {
+  const { winner } = await resolveAuthLine(ctx, config)
+  const line = winner.line
   const now = Date.now()
   if (
     accessCache !== undefined
     && accessCache.expiresAt > now + 15_000
-    && (settings.resolvedLine.length === 0 || accessCache.lineId === settings.resolvedLine)
+    && accessCache.lineId === line.id
   ) {
-    return { accessToken: accessCache.accessToken, lineId: accessCache.lineId }
+    return { accessToken: accessCache.accessToken, lineId: accessCache.lineId, line }
   }
 
   const refreshToken = await resolveRefreshToken(ctx)
@@ -81,14 +82,6 @@ async function ensureAccessToken(
     throw Object.assign(new Error('会话已失效，请重新快速配置。'), {
       code: WALLET_ERROR.sessionRevoked,
     })
-  }
-
-  let line = settings.resolvedLine.length > 0
-    ? findLine(config.lines, settings.resolvedLine)
-    : undefined
-  if (line === undefined) {
-    const { winner } = await resolveLine(ctx, config)
-    line = winner.line
   }
 
   try {
@@ -99,7 +92,7 @@ async function ensureAccessToken(
       expiresAt: now + Math.max(30, tokens.expiresIn - 30) * 1000,
       lineId: line.id,
     }
-    return { accessToken: tokens.accessToken, lineId: line.id }
+    return { accessToken: tokens.accessToken, lineId: line.id, line }
   } catch (error: unknown) {
     accessCache = undefined
     const message = error instanceof Error ? error.message : messageForCode('harness.session_revoked')
@@ -107,13 +100,9 @@ async function ensureAccessToken(
   }
 }
 
-function pickLineForConsole(ctx: Context, config: Config): SupaLine {
-  const settings = readSettings(ctx)
-  if (settings.resolvedLine.length > 0) {
-    const hit = findLine(config.lines, settings.resolvedLine)
-    if (hit !== undefined) return hit
-  }
-  return findLine(config.lines, 'global') ?? config.lines[0]!
+async function pickLineForConsole(ctx: Context, config: Config): Promise<SupaLine> {
+  const { winner } = await resolveAuthLine(ctx, config)
+  return winner.line
 }
 
 function usagePoliciesUrlFor(config: Config, line: SupaLine): string {
@@ -129,9 +118,10 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
       try {
         const connected = await isApiKeyConfigured(ctx)
         const settings = readSettings(ctx)
+        const line = await pickLineForConsole(ctx, config)
         const body = apiOk<WalletStatusResponse>({
           connected,
-          usagePoliciesUrl: usagePoliciesUrlFor(config, pickLineForConsole(ctx, config)),
+          usagePoliciesUrl: usagePoliciesUrlFor(config, line),
           ...(settings.keyPrefix.length > 0 ? { keyPrefix: settings.keyPrefix } : {}),
         })
         return jsonResponse(body)
@@ -159,9 +149,7 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
         }
 
         const locale = new URL(request.url).searchParams.get('locale') ?? undefined
-        const { accessToken } = await ensureAccessToken(ctx, config, locale)
-        const line = findLine(config.lines, settings.resolvedLine)
-          ?? (await resolveLine(ctx, config)).winner.line
+        const { accessToken, line } = await ensureAccessToken(ctx, config, locale)
         const wallet = await fetchWallet(
           line,
           accessToken,

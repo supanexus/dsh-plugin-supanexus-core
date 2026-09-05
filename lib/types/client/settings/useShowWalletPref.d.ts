@@ -5,7 +5,7 @@ import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts';
 export declare function readShowWallet(scope: SettingsScope<SupaNexusUiSettings>): boolean;
 /** Effective showBrand (defaults to true while loading / missing). */
 export declare function readShowBrand(scope: SettingsScope<SupaNexusUiSettings>): boolean;
-/** Active line id for .ai / .io site pick (`resolvedLine` → `pinnedLine` → `global`). */
+/** Active line id for .ai / .io site pick (`pinnedLine` → `resolvedLine` → `global`). */
 export declare function readActiveLineId(scope: SettingsScope<SupaNexusUiSettings>): string;
 /** React mirror of {@link readShowWallet}. */
 export declare function useShowWalletPref(scope: SettingsScope<SupaNexusUiSettings>): boolean;

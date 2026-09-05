@@ -31,7 +31,7 @@ import {
   type PluginUpgradeStatusData,
 } from '../../shared/plugin-market-contract.ts'
 import type { Config } from '../config.ts'
-import { resolveLine } from '../line/resolver.ts'
+import { resolveEnvLine } from '../line/resolver.ts'
 import { resolvePluginCatalogOrigin } from './catalog-origin.ts'
 import { fetchListingByCode, fetchPublicCategories, fetchPublicListings } from './gateway-client.ts'
 import { fetchRemotePackageManifest } from './remote-package-json.ts'
@@ -112,7 +112,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
-        const { winner } = await resolveLine(ctx, config)
+        const { winner } = await resolveEnvLine(ctx, config)
         const catalogOrigin = resolvePluginCatalogOrigin(config, winner.line)
         const params = new URLSearchParams(url.searchParams)
         if (!params.has('locale')) {
@@ -133,7 +133,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
-        const { winner } = await resolveLine(ctx, config)
+        const { winner } = await resolveEnvLine(ctx, config)
         const catalogOrigin = resolvePluginCatalogOrigin(config, winner.line)
         const params = new URLSearchParams(url.searchParams)
         if (!params.has('locale')) {
@@ -167,7 +167,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
           return jsonResponse(apiErr('缺少 installCode。'), 400)
         }
         const locale = normalizeLocale(url.searchParams.get('locale'))
-        const { winner } = await resolveLine(ctx, config)
+        const { winner } = await resolveEnvLine(ctx, config)
         const catalogOrigin = resolvePluginCatalogOrigin(config, winner.line)
         const listing = await fetchListingByCode(catalogOrigin, installCode, locale)
         const candidates = orderRepositories(listing, winner.line.id)
@@ -252,7 +252,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
           return jsonResponse(apiErr('缺少 installCodes。'), 400)
         }
         const locale = normalizeLocale(url.searchParams.get('locale'))
-        const { winner } = await resolveLine(ctx, config)
+        const { winner } = await resolveEnvLine(ctx, config)
         const catalogOrigin = resolvePluginCatalogOrigin(config, winner.line)
         const resolved = await Promise.all(installCodes.map(async (installCode) => {
           try {
@@ -289,7 +289,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
           return jsonResponse(apiErr('缺少 installCode。'), 400)
         }
         const locale = normalizeLocale(url.searchParams.get('locale'))
-        const { winner } = await resolveLine(ctx, config)
+        const { winner } = await resolveEnvLine(ctx, config)
         const catalogOrigin = resolvePluginCatalogOrigin(config, winner.line)
         const listing = await fetchListingByCode(catalogOrigin, installCode, locale)
         const targetRef = primaryTargetRef(listing, winner.line.id)

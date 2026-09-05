@@ -123,3 +123,50 @@
   line-height: 1.5;
   color: var(--dsw-alias-label-tertiary);
 }
+
+.segment {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-3);
+  border: 1px solid var(--dsw-alias-border-l2);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.segmentBtn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--dsw-alias-label-secondary);
+  transition: background 0.12s, color 0.12s;
+}
+
+.segmentBtn:hover:not(:disabled) {
+  color: var(--dsw-alias-label-primary);
+}
+
+.segmentBtn:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: 1px;
+}
+
+.segmentBtnActive {
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  border: 1px solid var(--dsw-alias-border-l2);
+}
+
+.segmentBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

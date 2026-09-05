@@ -3,6 +3,12 @@
 export interface SettingsCardCopy {
   readonly title: string
   readonly description: string
+  readonly region: string
+  readonly regionHint: string
+  readonly regionGlobal: string
+  readonly regionCn: string
+  readonly regionLocked: string
+  readonly regionLoading: string
   readonly showWallet: string
   readonly showWalletHint: string
   readonly showBrand: string
@@ -15,6 +21,12 @@ export interface SettingsCardCopy {
 const ZH: SettingsCardCopy = {
   title: 'SupaNexus',
   description: '平台连接与侧栏展示相关选项。',
+  region: '访问区域',
+  regionHint: '中国大陆访问更快。仅改变授权、控制台与余额线路；插件下载线路由「插件市场」单独设置。',
+  regionGlobal: '全球',
+  regionCn: '中国大陆',
+  regionLocked: '管理员已锁定访问区域，无法在此切换。',
+  regionLoading: '正在探测最快线路…',
   showWallet: '在侧栏显示余额',
   showWalletHint: '关闭后侧栏不再显示余额入口；仅在当前模型服务商为 SupaNexus 时才会出现该入口。',
   showBrand: '显示 SupaNexus 品牌样式',
@@ -27,6 +39,12 @@ const ZH: SettingsCardCopy = {
 const EN: SettingsCardCopy = {
   title: 'SupaNexus',
   description: 'Connection and sidebar display options.',
+  region: 'Access region',
+  regionHint: 'Mainland China may be faster. This only changes auth, console, and balance routes; plugin downloads are configured under Plugin Market.',
+  regionGlobal: 'Global',
+  regionCn: 'Mainland China',
+  regionLocked: 'Access region is locked by admin configuration.',
+  regionLoading: 'Detecting the fastest line…',
   showWallet: 'Show balance in sidebar',
   showWalletHint: 'When off, the sidebar balance entry is hidden. It only appears when the current model provider is SupaNexus.',
   showBrand: 'Show SupaNexus branding',
