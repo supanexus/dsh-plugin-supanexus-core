@@ -9,7 +9,7 @@ Repo: [GitHub](https://github.com/supanexus/dsh-plugin-supanexus-core)
 ## Install
 
 ```bash
-dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.3.0
+dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.3.1
 ```
 
 Fully restart `dsh web` (or Desktop Host) after install, then open the printed `?token=` URL.

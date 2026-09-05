@@ -45,12 +45,12 @@ describe('skill-market wire', () => {
       code: 'INSTALL_FAILED',
       attempts: [{
         provider: 'gitee',
-        spec: 'gitee:org/pkg',
+        spec: 'git+https://gitee.com/org/pkg.git',
         ok: false,
-        cliCommand: 'node cli.js plugin --profile web add gitee:org/pkg',
+        cliCommand: 'node cli.js plugin --profile web add git+https://gitee.com/org/pkg.git',
         stderr: 'network error',
       }],
-      log: '[gitee] node cli.js plugin --profile web add gitee:org/pkg\nnetwork error',
+      log: '[gitee] node cli.js plugin --profile web add git+https://gitee.com/org/pkg.git\nnetwork error',
     }), { status: 400 })
     try {
       await expect(installPlugin('demo')).rejects.toBeInstanceOf(InstallPluginError)
@@ -59,7 +59,7 @@ describe('skill-market wire', () => {
       } catch (error: unknown) {
         expect(error).toBeInstanceOf(InstallPluginError)
         const installError = error as InstallPluginError
-        expect(installError.log).toContain('gitee:org/pkg')
+        expect(installError.log).toContain('git+https://gitee.com/org/pkg.git')
         expect(installError.attempts?.length).toBe(1)
       }
     } finally {

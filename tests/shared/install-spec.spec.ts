@@ -33,12 +33,19 @@ describe('buildInstallSpecFor', () => {
       .toBe('github:supanexus/dsh-plugin-demo#v1.0.0')
   })
 
-  it('builds gitee spec', () => {
+  it('builds gitee as git+https (pnpm does not understand gitee:)', () => {
     expect(buildInstallSpecFor({
       provider: 'gitee',
       url: 'https://gitee.com/org/demo.git',
       default_ref: 'main',
-    }, 'demo-plugin')).toBe('gitee:org/demo#main')
+    }, 'demo-plugin')).toBe('git+https://gitee.com/org/demo.git#main')
+  })
+
+  it('builds gitee without ref', () => {
+    expect(buildInstallSpecFor({
+      provider: 'gitee',
+      url: 'https://gitee.com/org/demo',
+    }, 'demo-plugin')).toBe('git+https://gitee.com/org/demo.git')
   })
 })
 

@@ -94,7 +94,7 @@ export declare const skillMarketMessages: {
         readonly upgradeModalTitleSuccess: "升级完成";
         readonly upgradeModalTitleFailed: "升级失败";
         readonly upgradeModalRunning: "正在执行 dsh plugin add，请勿关闭窗口…";
-        readonly upgradeModalTargetVersion: "运营目标版本";
+        readonly upgradeModalTargetVersion: "目标";
         readonly upgradeModalRemoteVersion: "远端 package.json 版本";
         readonly checkingRemoteVersion: "正在读取远端 package.json 版本…";
         readonly remoteVersionUnknown: "未知";
@@ -199,7 +199,7 @@ export declare const skillMarketMessages: {
         readonly upgradeModalTitleSuccess: "Upgrade complete";
         readonly upgradeModalTitleFailed: "Upgrade failed";
         readonly upgradeModalRunning: "Running dsh plugin add — please keep this window open…";
-        readonly upgradeModalTargetVersion: "Operational target version";
+        readonly upgradeModalTargetVersion: "Target";
         readonly upgradeModalRemoteVersion: "Remote package.json version";
         readonly checkingRemoteVersion: "Reading remote package.json version…";
         readonly remoteVersionUnknown: "Unknown";
