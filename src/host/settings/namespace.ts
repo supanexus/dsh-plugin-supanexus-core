@@ -2,9 +2,9 @@
 
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
-import { settingsNamespace } from '@deepseek-ai/dsh-settings'
 
-export const SUPANEXUS_NS = settingsNamespace('supanexus')
+/** Plain namespace id; dsh ≥0.1.3 dropped `settingsNamespace()` helper. */
+export const SUPANEXUS_NS = 'supanexus'
 
 /** Persisted plugin state (not provider profile — that lives in llm-pi-ai). */
 export interface SupaNexusSettings {

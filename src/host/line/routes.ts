@@ -23,6 +23,7 @@ export function registerLineRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: LINE_STATUS_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async () => {
       try {
         const report = await resolveAuthLine(ctx, config)

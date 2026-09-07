@@ -114,6 +114,7 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: WALLET_STATUS_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async () => {
       try {
         const connected = await isApiKeyConfigured(ctx)
@@ -135,6 +136,7 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: WALLET_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const connected = await isApiKeyConfigured(ctx)

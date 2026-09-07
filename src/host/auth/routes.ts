@@ -68,6 +68,7 @@ export function registerAuthRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: '/api/supanexus.auth.start',
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -112,6 +113,7 @@ export function registerAuthRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: '/api/supanexus.auth.status',
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       const flowId = new URL(request.url).searchParams.get('flowId') ?? ''
       const flow = getFlow(flowId)

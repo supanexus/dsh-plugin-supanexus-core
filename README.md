@@ -9,7 +9,7 @@ SupaNexus 平台核心：品牌样式、OAuth 快速配置、双线路模型接�
 ## 安装
 
 ```bash
-dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.3.1
+dsh plugin --profile web add github:supanexus/dsh-plugin-supanexus-core#v0.3.3
 ```
 
 安装后请**完全重启** `dsh web`（或 Desktop Host），并用打印的 `?token=` 地址打开。

@@ -109,6 +109,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_LISTINGS_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -130,6 +131,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_CATEGORIES_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -151,6 +153,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_INSTALL_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -195,6 +198,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_UNINSTALL_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -240,6 +244,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_UPGRADE_STATUS_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -281,6 +286,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_REMOTE_VERSION_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -310,6 +316,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_TOGGLE_STATUS_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -343,6 +350,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: PLUGIN_TOGGLE_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       try {
         const url = new URL(request.url)
@@ -379,6 +387,7 @@ export function registerPluginMarketRoutes(ctx: Context, config: Config): void {
   ctx.effect(() => ctx.connection.fetch.register({
     path: RESTART_HOST_PATH,
     methods: ['GET'],
+    requestBody: 'buffered',
     fetch: async (request) => {
       if (!isDirectLoopbackRequest(request)) {
         return jsonResponse(apiErr('仅允许本机 loopback 请求重启 Host。'), 403)
