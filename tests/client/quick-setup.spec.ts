@@ -57,6 +57,34 @@ describe('provider-write', () => {
     expect(mutate).toHaveBeenCalledWith(PROVIDER_NS, expect.any(Array), 7)
   })
 
+  it('writes reasoningEfforts and contextWindow for GPT models', async () => {
+    const mutate = vi.fn(async () => ({ ok: true as const, value: undefined }))
+    const settings: SettingsWriteRemote = {
+      describe: async () => ({
+        ok: true as const,
+        value: { namespaces: [{ ns: PROVIDER_NS, revision: 1 }] },
+      }),
+      mutate,
+    }
+    await writeSupaNexusProvider(settings, {
+      baseURL: 'http://127.0.0.1:31002/v1',
+      models: [{
+        id: 'openai/gpt-5.6-luna',
+        name: 'GPT-5.6 Luna',
+        contextWindow: 1_050_000,
+        input: ['text', 'image'],
+        reasoningEfforts: { off: 'none', high: 'high' },
+      }],
+    })
+    const value = mutate.mock.calls[0]?.[1]?.[0]?.value as {
+      api: string
+      models: Array<{ reasoningEfforts?: Record<string, string>; contextWindow?: number }>
+    }
+    expect(value.api).toBe(PROVIDER_API)
+    expect(value.models[0]?.contextWindow).toBe(1_050_000)
+    expect(value.models[0]?.reasoningEfforts?.off).toBe('none')
+  })
+
   it('retries once on settings-conflict', async () => {
     let revision = 1
     const mutate = vi.fn(async (_ns, _ops, expected) => {

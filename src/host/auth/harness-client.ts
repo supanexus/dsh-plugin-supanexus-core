@@ -2,6 +2,7 @@
 
 import { dataPlaneBase, harnessBase, type SupaLine } from '../../shared/line.ts'
 import type { ProviderModelEntry } from '../../shared/auth-contract.ts'
+import { GPT_REASONING_EFFORTS, modelNeedsReasoningEfforts } from '../../shared/reasoning-efforts.ts'
 
 interface HarnessEnvelope<T> {
   readonly code: string
@@ -213,9 +214,11 @@ export async function fetchWallet(
 interface UpstreamModelRow {
   readonly id: string
   readonly name?: string
+  readonly context_length?: number
   readonly architecture?: {
     readonly input_modalities?: readonly string[]
   }
+  readonly supported_parameters?: readonly string[]
 }
 
 /**
@@ -243,11 +246,20 @@ export async function listModels(
   const payload = await response.json() as { data?: UpstreamModelRow[] }
   const models = payload.data ?? []
   if (models.length === 0) return FALLBACK_MODELS
-  return models.map(model => ({
-    id: model.id,
-    ...model.name === undefined ? {} : { name: model.name },
-    input: inputFromModalities(model.architecture?.input_modalities),
-  }))
+  return models.map(model => {
+    const supported = model.supported_parameters ?? []
+    const reasoning =
+      modelNeedsReasoningEfforts(model.id) || supported.includes('reasoning')
+    return {
+      id: model.id,
+      ...model.name === undefined ? {} : { name: model.name },
+      ...model.context_length !== undefined && model.context_length > 0
+        ? { contextWindow: model.context_length }
+        : {},
+      input: inputFromModalities(model.architecture?.input_modalities),
+      ...reasoning ? { reasoningEfforts: { ...GPT_REASONING_EFFORTS } } : {},
+    }
+  })
 }
 
 /** Minimal fallback when model discovery fails. */

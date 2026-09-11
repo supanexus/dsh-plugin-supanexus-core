@@ -1,7 +1,7 @@
 {
   "name": "@supanexus/dsh-plugin-supanexus-core",
   "description": "SupaNexus platform core: brand UI, OAuth quick setup, dual-line model provider, and app plugin market",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",

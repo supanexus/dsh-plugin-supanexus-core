@@ -1,7 +1,8 @@
 /** `supanexus` settings namespace registration. */
 import type { Context } from '@deepseek-ai/cordis';
 import z from '@deepseek-ai/schemastery';
-export declare const SUPANEXUS_NS: "supanexus";
+/** Plain namespace id; dsh ≥0.1.3 dropped `settingsNamespace()` helper. */
+export declare const SUPANEXUS_NS = "supanexus";
 /** Persisted plugin state (not provider profile — that lives in llm-pi-ai). */
 export interface SupaNexusSettings {
     deviceName: string;

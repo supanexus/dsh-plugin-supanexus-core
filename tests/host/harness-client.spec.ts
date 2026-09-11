@@ -134,6 +134,39 @@ describe('harness-client refresh + wallet', () => {
       { id: 'bare/no-arch', input: ['text'] },
     ])
   })
+
+  it('listModels maps context_length and GPT reasoningEfforts', async () => {
+    globalThis.fetch = vi.fn(async () => new Response(JSON.stringify({
+      data: [
+        {
+          id: 'openai/gpt-5.6-luna',
+          name: 'GPT-5.6 Luna',
+          context_length: 1_050_000,
+          supported_parameters: ['reasoning', 'tools'],
+          architecture: { input_modalities: ['text', 'image'] },
+        },
+        {
+          id: 'deepseek/deepseek-flash',
+          name: 'DeepSeek Flash',
+          context_length: 128_000,
+        },
+      ],
+    }), { status: 200 })) as typeof fetch
+
+    const models = await listModels(line, 'key-1')
+    expect(models[0]).toMatchObject({
+      id: 'openai/gpt-5.6-luna',
+      contextWindow: 1_050_000,
+      input: ['text', 'image'],
+      reasoningEfforts: expect.objectContaining({ off: 'none', high: 'high' }),
+    })
+    expect(models[1]).toEqual({
+      id: 'deepseek/deepseek-flash',
+      name: 'DeepSeek Flash',
+      contextWindow: 128_000,
+      input: ['text'],
+    })
+  })
 })
 
 describe('wallet-contract', () => {

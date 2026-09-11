@@ -61,6 +61,9 @@ export async function writeSupaNexusProvider(
       ...model.contextWindow === undefined ? {} : { contextWindow: model.contextWindow },
       // pi-ai settings field is `input`; omit when unknown so catalog defaults apply.
       ...model.input === undefined || model.input.length === 0 ? {} : { input: [...model.input] },
+      ...model.reasoningEfforts === undefined
+        ? {}
+        : { reasoningEfforts: { ...model.reasoningEfforts } },
     })),
   }
   const response = await settings.mutate(
