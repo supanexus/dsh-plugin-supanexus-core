@@ -97,6 +97,14 @@ describe('harness-client refresh + wallet', () => {
           name: 'Default',
           available_balance: '12.34',
           currency: 'USD',
+          subscription_active: true,
+          points_remaining: '70',
+          points_granted: '70',
+          plan_code: 'pro_monthly',
+          plan_name: 'Pro Monthly',
+          subscription_status: 'active',
+          next_points_reset_at_unix: 1760857440,
+          period_end_unix: 1763449440,
         },
       }), { status: 200 })
     }) as typeof fetch
@@ -105,6 +113,10 @@ describe('harness-client refresh + wallet', () => {
     expect(wallet.availableBalance).toBe('12.34')
     expect(wallet.currency).toBe('USD')
     expect(wallet.organizationId).toBe('org-1')
+    expect(wallet.subscriptionActive).toBe(true)
+    expect(wallet.pointsRemaining).toBe('70')
+    expect(wallet.planName).toBe('Pro Monthly')
+    expect(wallet.nextPointsResetAtUnix).toBe(1760857440)
   })
 
   it('listModels maps architecture.input_modalities onto input', async () => {

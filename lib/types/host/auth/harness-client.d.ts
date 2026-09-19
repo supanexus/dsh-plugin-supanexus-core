@@ -40,8 +40,16 @@ export interface WalletResult {
     readonly name: string;
     readonly availableBalance: string;
     readonly currency: string;
+    readonly subscriptionActive: boolean;
+    readonly pointsRemaining: string;
+    readonly pointsGranted: string;
+    readonly planCode: string;
+    readonly planName: string;
+    readonly subscriptionStatus: string;
+    readonly nextPointsResetAtUnix: number;
+    readonly periodEndUnix: number;
 }
-/** Read organization balance for the device credential. */
+/** Read organization balance + subscription points for the device credential. */
 export declare function fetchWallet(line: SupaLine, accessToken: string, deviceId: string, locale?: string): Promise<WalletResult>;
 /**
  * Map harness `architecture.input_modalities` to pi-ai `input`.

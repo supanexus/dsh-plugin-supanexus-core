@@ -177,9 +177,17 @@ export interface WalletResult {
   readonly name: string
   readonly availableBalance: string
   readonly currency: string
+  readonly subscriptionActive: boolean
+  readonly pointsRemaining: string
+  readonly pointsGranted: string
+  readonly planCode: string
+  readonly planName: string
+  readonly subscriptionStatus: string
+  readonly nextPointsResetAtUnix: number
+  readonly periodEndUnix: number
 }
 
-/** Read organization balance for the device credential. */
+/** Read organization balance + subscription points for the device credential. */
 export async function fetchWallet(
   line: SupaLine,
   accessToken: string,
@@ -201,12 +209,28 @@ export async function fetchWallet(
     name: string
     available_balance: string
     currency: string
+    subscription_active?: boolean
+    points_remaining?: string
+    points_granted?: string
+    plan_code?: string
+    plan_name?: string
+    subscription_status?: string
+    next_points_reset_at_unix?: number
+    period_end_unix?: number
   }>(response)
   return {
     organizationId: data.organization_id,
     name: data.name,
     availableBalance: data.available_balance,
     currency: data.currency,
+    subscriptionActive: Boolean(data.subscription_active),
+    pointsRemaining: data.points_remaining?.trim() || '0',
+    pointsGranted: data.points_granted?.trim() || '0',
+    planCode: data.plan_code?.trim() || '',
+    planName: data.plan_name?.trim() || '',
+    subscriptionStatus: data.subscription_status?.trim() || '',
+    nextPointsResetAtUnix: data.next_points_reset_at_unix ?? 0,
+    periodEndUnix: data.period_end_unix ?? 0,
   }
 }
 

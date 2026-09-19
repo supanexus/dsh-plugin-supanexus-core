@@ -55,6 +55,19 @@
   letter-spacing: 0.01em;
 }
 
+.triggerFade {
+  animation: walletTriggerFade 0.35s ease;
+}
+
+@keyframes walletTriggerFade {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -119,10 +132,65 @@
   background: var(--dsw-alias-interactive-bg-hover);
 }
 
+.tabBar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 0 0 12px;
+}
+
+.segmentGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 10px;
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.segmentButton {
+  height: 32px;
+  min-width: 72px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 7px;
+  background: var(--dsw-alias-interactive-bg-hover);
+  color: var(--dsw-alias-label-secondary);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.segmentButton:hover {
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.segmentButtonActive {
+  height: 32px;
+  min-width: 72px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 7px;
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
 .balanceBlock {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-height: 120px;
 }
 
 .balanceLabel {
@@ -138,6 +206,15 @@
   font-weight: 650;
   line-height: 1.2;
   color: var(--dsw-alias-label-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.balanceSecondary {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--dsw-alias-label-secondary);
   font-variant-numeric: tabular-nums;
 }
 

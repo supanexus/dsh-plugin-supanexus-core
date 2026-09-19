@@ -52,11 +52,55 @@ async function parseJson<T>(response: Response): Promise<T> {
   return body as T
 }
 
+function asString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback
+}
+
+function asNumber(value: unknown, fallback = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback
+}
+
+/** Normalize Host wallet payloads so missing subscription fields never crash UI. */
+export function normalizeWalletStatus(raw: WalletStatusResponse): WalletStatusResponse {
+  return {
+    connected: Boolean(raw.connected),
+    credentialAligned: raw.credentialAligned !== false,
+    usagePoliciesUrl: asString(raw.usagePoliciesUrl),
+    ...(typeof raw.keyPrefix === 'string' && raw.keyPrefix.length > 0
+      ? { keyPrefix: raw.keyPrefix }
+      : {}),
+  }
+}
+
+/** Normalize Host balance payloads for older Host builds without points fields. */
+export function normalizeWalletBalance(raw: WalletBalanceResponse): WalletBalanceResponse {
+  return {
+    connected: true,
+    organizationId: asString(raw.organizationId),
+    name: asString(raw.name),
+    availableBalance: asString(raw.availableBalance),
+    currency: asString(raw.currency, 'USD'),
+    subscriptionActive: Boolean(raw.subscriptionActive),
+    pointsRemaining: asString(raw.pointsRemaining, '0'),
+    pointsGranted: asString(raw.pointsGranted, '0'),
+    planCode: asString(raw.planCode),
+    planName: asString(raw.planName),
+    subscriptionStatus: asString(raw.subscriptionStatus),
+    nextPointsResetAtUnix: asNumber(raw.nextPointsResetAtUnix),
+    periodEndUnix: asNumber(raw.periodEndUnix),
+    usagePoliciesUrl: asString(raw.usagePoliciesUrl),
+    ...(typeof raw.keyPrefix === 'string' && raw.keyPrefix.length > 0
+      ? { keyPrefix: raw.keyPrefix }
+      : {}),
+  }
+}
+
 /** Probe whether SupaNexus credentials exist (sidebar visibility). */
 export async function fetchWalletStatus(): Promise<WalletStatusResponse> {
   const url = new URL(WALLET_STATUS_PATH, window.location.origin)
   const response = await fetch(url)
-  return parseJson<StatusBody>(response)
+  const body = await parseJson<StatusBody>(response)
+  return normalizeWalletStatus(body)
 }
 
 /** Fetch organization balance via Host (refresh + wallet). */
@@ -64,5 +108,6 @@ export async function fetchWalletBalance(locale?: string): Promise<WalletBalance
   const url = new URL(WALLET_PATH, window.location.origin)
   if (locale !== undefined && locale.length > 0) url.searchParams.set('locale', locale)
   const response = await fetch(url)
-  return parseJson<BalanceBody>(response)
+  const body = await parseJson<BalanceBody>(response)
+  return normalizeWalletBalance(body)
 }

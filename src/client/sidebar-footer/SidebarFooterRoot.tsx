@@ -5,6 +5,7 @@ import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts'
 import { SkillMarketRoot } from '../skill-market/SkillMarketRoot.tsx'
 import { WalletRoot } from '../wallet/WalletRoot.tsx'
+import { FooterErrorBoundary } from './FooterErrorBoundary.tsx'
 import css from './sidebar-footer.module.css'
 
 export interface SidebarFooterRootProps extends PropsRuntime<'sidebar.footer.action'> {
@@ -20,8 +21,12 @@ export function SidebarFooterRoot(props: SidebarFooterRootProps) {
   const { settings, ...rest } = props
   return (
     <div className={css.stack}>
-      <WalletRoot {...rest} settings={settings} />
-      <SkillMarketRoot {...rest} settings={settings} />
+      <FooterErrorBoundary label="wallet">
+        <WalletRoot {...rest} settings={settings} />
+      </FooterErrorBoundary>
+      <FooterErrorBoundary label="skill-market">
+        <SkillMarketRoot {...rest} settings={settings} />
+      </FooterErrorBoundary>
     </div>
   )
 }

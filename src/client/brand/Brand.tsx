@@ -24,9 +24,9 @@ export function SupaNexusBrandMark({ size, className }: SupaNexusBrandMarkProps)
       height={size}
       className={className}
       aria-hidden
-      style={{ display: 'block', flexShrink: 0, borderRadius: 6 }}
+      style={{ display: 'block', flexShrink: 0 }}
     >
-      <rect width="512" height="512" fill="#1212F9" rx="0" />
+      <rect width="512" height="512" fill="#1212F9" rx="96" ry="96" />
       <g transform="translate(256,256) scale(0.72) translate(-297.65,-244)">
         <path
           fill="white"

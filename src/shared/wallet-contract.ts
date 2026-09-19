@@ -21,6 +21,8 @@ export function buildUsagePoliciesUrl(consoleOrigin: string): string {
 /** Host status body: whether SupaNexus credentials exist. */
 export interface WalletStatusResponse {
   readonly connected: boolean
+  /** False when live API key no longer matches OAuth-stored keyPrefix. */
+  readonly credentialAligned: boolean
   readonly usagePoliciesUrl: string
   readonly keyPrefix?: string
 }
@@ -31,6 +33,14 @@ export interface WalletBalanceData {
   readonly name: string
   readonly availableBalance: string
   readonly currency: string
+  readonly subscriptionActive: boolean
+  readonly pointsRemaining: string
+  readonly pointsGranted: string
+  readonly planCode: string
+  readonly planName: string
+  readonly subscriptionStatus: string
+  readonly nextPointsResetAtUnix: number
+  readonly periodEndUnix: number
   readonly usagePoliciesUrl: string
   readonly keyPrefix?: string
 }
@@ -45,4 +55,8 @@ export const WALLET_ERROR = {
   notConnected: 'wallet.not_connected',
   sessionRevoked: 'wallet.session_revoked',
   noDevice: 'wallet.no_device',
+  credentialMismatch: 'wallet.credential_mismatch',
 } as const
+
+/** Sidebar trigger rotation interval (points ↔ balance). */
+export const WALLET_TRIGGER_ROTATE_MS = 4_000 as const

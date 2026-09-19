@@ -12,6 +12,7 @@ import {
   REFRESH_CREDENTIAL_REF,
 } from '../../shared/provider.ts'
 import { type SupaLine } from '../../shared/line.ts'
+import { matchesStoredKeyPrefix } from '../../shared/key-prefix.ts'
 import {
   WALLET_ERROR,
   WALLET_PATH,
@@ -53,6 +54,20 @@ export function resetWalletAccessCache(): void {
 async function isApiKeyConfigured(ctx: Context): Promise<boolean> {
   const info = await ctx.credentials.describe(credentialRef(CREDENTIAL_REF))
   return info.configured
+}
+
+async function resolveApiKeySecret(ctx: Context): Promise<string | undefined> {
+  const resolved = await ctx.credentials.resolve(credentialRef(CREDENTIAL_REF))
+  const value = resolved?.value?.trim()
+  return value !== undefined && value.length > 0 ? value : undefined
+}
+
+/** True when live API key still matches OAuth-stored keyPrefix (or prefix unset). */
+async function isCredentialAligned(ctx: Context, keyPrefix: string): Promise<boolean> {
+  if (keyPrefix.trim().length === 0) return true
+  const secret = await resolveApiKeySecret(ctx)
+  if (secret === undefined) return false
+  return matchesStoredKeyPrefix(secret, keyPrefix)
 }
 
 async function resolveRefreshToken(ctx: Context): Promise<string | undefined> {
@@ -119,9 +134,13 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
       try {
         const connected = await isApiKeyConfigured(ctx)
         const settings = readSettings(ctx)
+        const credentialAligned = connected
+          ? await isCredentialAligned(ctx, settings.keyPrefix)
+          : true
         const line = await pickLineForConsole(ctx, config)
         const body = apiOk<WalletStatusResponse>({
           connected,
+          credentialAligned,
           usagePoliciesUrl: usagePoliciesUrlFor(config, line),
           ...(settings.keyPrefix.length > 0 ? { keyPrefix: settings.keyPrefix } : {}),
         })
@@ -145,6 +164,17 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
         }
 
         const settings = readSettings(ctx)
+        const aligned = await isCredentialAligned(ctx, settings.keyPrefix)
+        if (!aligned) {
+          return jsonResponse(
+            apiErr(
+              'API Key 已变更，请打开设置 → 模型，重新执行 SupaNexus 快速配置。',
+              WALLET_ERROR.credentialMismatch,
+            ),
+            400,
+          )
+        }
+
         const deviceId = settings.deviceId.trim()
         if (deviceId.length === 0) {
           return jsonResponse(apiErr('缺少设备标识，请重新快速配置。', WALLET_ERROR.noDevice), 400)
@@ -165,6 +195,14 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
           name: wallet.name,
           availableBalance: wallet.availableBalance,
           currency: wallet.currency,
+          subscriptionActive: wallet.subscriptionActive,
+          pointsRemaining: wallet.pointsRemaining,
+          pointsGranted: wallet.pointsGranted,
+          planCode: wallet.planCode,
+          planName: wallet.planName,
+          subscriptionStatus: wallet.subscriptionStatus,
+          nextPointsResetAtUnix: wallet.nextPointsResetAtUnix,
+          periodEndUnix: wallet.periodEndUnix,
           usagePoliciesUrl: usagePoliciesUrlFor(config, line),
           ...(settings.keyPrefix.length > 0 ? { keyPrefix: settings.keyPrefix } : {}),
         })

@@ -8,7 +8,7 @@ const settingsState = {
   latencyMs: 0,
   pinnedLine: 'global',
   apiKeyId: 'key-1',
-  keyPrefix: 'sk-…',
+  keyPrefix: 'sk-snx-abcdefghij…',
   connectedAt: 1,
   showWallet: true,
   showBrand: true,
@@ -32,6 +32,14 @@ const fetchWallet = vi.fn(async () => ({
   name: 'Org',
   availableBalance: '1.00',
   currency: 'USD',
+  subscriptionActive: true,
+  pointsRemaining: '70',
+  pointsGranted: '70',
+  planCode: 'pro_monthly',
+  planName: 'Pro',
+  subscriptionStatus: 'active',
+  nextPointsResetAtUnix: 0,
+  periodEndUnix: 0,
 }))
 
 vi.mock('../../src/host/auth/harness-client.ts', () => ({
@@ -69,12 +77,18 @@ vi.mock('../../src/host/line/resolver.ts', async () => {
 })
 
 import { credentialRef } from '@deepseek-ai/dsh-credentials'
-import { WALLET_PATH } from '../../src/shared/wallet-contract.ts'
+import {
+  WALLET_ERROR,
+  WALLET_PATH,
+  WALLET_STATUS_PATH,
+} from '../../src/shared/wallet-contract.ts'
 import { CREDENTIAL_REF, REFRESH_CREDENTIAL_REF } from '../../src/shared/provider.ts'
 import {
   registerWalletRoutes,
   resetWalletAccessCache,
 } from '../../src/host/wallet/routes.ts'
+
+const ALIGNED_SECRET = 'sk-snx-abcdefghijklmnopQRST'
 
 const config = {
   lines: [
@@ -105,14 +119,14 @@ const config = {
   consoleOrigin: '',
 }
 
-function makeCtx() {
-  let handler: ((request: Request) => Promise<Response>) | undefined
+function makeCtx(apiKeySecret = ALIGNED_SECRET) {
+  const handlers = new Map<string, (request: Request) => Promise<Response>>()
   const ctx = {
     effect: (fn: () => unknown) => { fn(); return () => {} },
     connection: {
       fetch: {
         register: (opts: { path: string; fetch: (request: Request) => Promise<Response> }) => {
-          if (opts.path === WALLET_PATH) handler = opts.fetch
+          handlers.set(opts.path, opts.fetch)
           return () => {}
         },
       },
@@ -125,6 +139,9 @@ function makeCtx() {
         if (ref === credentialRef(REFRESH_CREDENTIAL_REF)) {
           return { value: 'refresh-token' }
         }
+        if (ref === credentialRef(CREDENTIAL_REF)) {
+          return { value: apiKeySecret }
+        }
         return undefined
       },
       set: async () => {},
@@ -132,9 +149,10 @@ function makeCtx() {
   }
   return {
     ctx: ctx as never,
-    callWallet: async () => {
-      if (handler === undefined) throw new Error('wallet handler missing')
-      return handler(new Request(`http://127.0.0.1${WALLET_PATH}`))
+    call: async (path: string) => {
+      const handler = handlers.get(path)
+      if (handler === undefined) throw new Error(`handler missing for ${path}`)
+      return handler(new Request(`http://127.0.0.1${path}`))
     },
   }
 }
@@ -146,26 +164,67 @@ describe('wallet region switch', () => {
     fetchWallet.mockClear()
     settingsState.pinnedLine = 'global'
     settingsState.resolvedLine = 'global'
+    settingsState.keyPrefix = `${ALIGNED_SECRET.slice(0, 16)}…`
   })
 
   it('invalidates access cache when pinnedLine changes and refreshes on the new line', async () => {
-    const { ctx, callWallet } = makeCtx()
+    const { ctx, call } = makeCtx()
     registerWalletRoutes(ctx, config)
 
-    const first = await callWallet()
+    const first = await call(WALLET_PATH)
     expect(first.status).toBe(200)
     expect(refreshSession).toHaveBeenCalledTimes(1)
     expect(refreshSession.mock.calls[0]![0]).toMatchObject({ id: 'global' })
 
-    await callWallet()
+    await call(WALLET_PATH)
     expect(refreshSession).toHaveBeenCalledTimes(1)
 
     settingsState.pinnedLine = 'cn'
     settingsState.resolvedLine = 'cn'
-    const second = await callWallet()
+    const second = await call(WALLET_PATH)
     expect(second.status).toBe(200)
     expect(refreshSession).toHaveBeenCalledTimes(2)
     expect(refreshSession.mock.calls[1]![0]).toMatchObject({ id: 'cn' })
     expect(fetchWallet.mock.calls.at(-1)![0]).toMatchObject({ id: 'cn' })
+  })
+})
+
+describe('wallet credential alignment', () => {
+  beforeEach(() => {
+    resetWalletAccessCache()
+    refreshSession.mockClear()
+    fetchWallet.mockClear()
+    settingsState.pinnedLine = 'global'
+    settingsState.resolvedLine = 'global'
+    settingsState.keyPrefix = `${ALIGNED_SECRET.slice(0, 16)}…`
+  })
+
+  it('reports credentialAligned on status and serves wallet when secret matches', async () => {
+    const { ctx, call } = makeCtx()
+    registerWalletRoutes(ctx, config)
+
+    const status = await call(WALLET_STATUS_PATH)
+    expect(status.status).toBe(200)
+    const statusBody = await status.json() as { credentialAligned: boolean }
+    expect(statusBody.credentialAligned).toBe(true)
+
+    const wallet = await call(WALLET_PATH)
+    expect(wallet.status).toBe(200)
+    expect(fetchWallet).toHaveBeenCalledOnce()
+  })
+
+  it('rejects wallet fetch when API key no longer matches keyPrefix', async () => {
+    const { ctx, call } = makeCtx('sk-other-project-key-xxxxx')
+    registerWalletRoutes(ctx, config)
+
+    const status = await call(WALLET_STATUS_PATH)
+    const statusBody = await status.json() as { credentialAligned: boolean }
+    expect(statusBody.credentialAligned).toBe(false)
+
+    const wallet = await call(WALLET_PATH)
+    expect(wallet.status).toBe(400)
+    const body = await wallet.json() as { code?: string }
+    expect(body.code).toBe(WALLET_ERROR.credentialMismatch)
+    expect(fetchWallet).not.toHaveBeenCalled()
   })
 })

@@ -4,10 +4,18 @@ import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts'
-import { WALLET_POLL_MS } from '../../shared/wallet-contract.ts'
+import {
+  WALLET_POLL_MS,
+  WALLET_TRIGGER_ROTATE_MS,
+  type WalletBalanceResponse,
+} from '../../shared/wallet-contract.ts'
 import { useShowWalletPref } from '../settings/useShowWalletPref.ts'
 import { useClientLocale } from '../use-client-locale.ts'
-import { formatWalletAmount } from './format.ts'
+import {
+  formatWalletTriggerAria,
+  formatWalletTriggerLabels,
+  type WalletTriggerLabels,
+} from './format.ts'
 import { useActiveModelProvider } from './useActiveModelProvider.ts'
 import { shouldShowWallet } from './visibility.ts'
 import { WalletPanel } from './WalletPanel.tsx'
@@ -41,38 +49,65 @@ export function WalletRoot({ wide, ctx, settings }: WalletRootProps) {
   const provider = useActiveModelProvider(ctx)
   const showWalletPref = useShowWalletPref(settings)
   const [connected, setConnected] = useState(false)
-  const [amountLabel, setAmountLabel] = useState<string | undefined>()
+  const [credentialAligned, setCredentialAligned] = useState(true)
+  const [labels, setLabels] = useState<WalletTriggerLabels | undefined>()
+  const [showPoints, setShowPoints] = useState(true)
   const [open, setOpen] = useState(false)
   const titleId = useId()
   const close = useCallback(() => { setOpen(false) }, [])
   const visible = shouldShowWallet(connected, provider, showWalletPref)
+
+  const applyBalance = useCallback((balance: WalletBalanceResponse | undefined) => {
+    if (balance === undefined) {
+      setLabels(undefined)
+      return
+    }
+    setLabels(formatWalletTriggerLabels(balance, locale))
+    setShowPoints(true)
+  }, [locale])
 
   const refresh = useCallback(async () => {
     try {
       const status = await fetchWalletStatus()
       if (!status.connected) {
         setConnected(false)
-        setAmountLabel(undefined)
+        setCredentialAligned(true)
+        setLabels(undefined)
         return
       }
       setConnected(true)
+      const aligned = status.credentialAligned !== false
+      setCredentialAligned(aligned)
+      if (!aligned) {
+        setLabels(undefined)
+        return
+      }
       try {
         const balance = await fetchWalletBalance(locale)
-        setAmountLabel(formatWalletAmount(balance.availableBalance, balance.currency))
+        applyBalance(balance)
       } catch {
-        setAmountLabel(undefined)
+        setLabels(undefined)
       }
     } catch {
       setConnected(false)
-      setAmountLabel(undefined)
+      setCredentialAligned(true)
+      setLabels(undefined)
     }
-  }, [locale])
+  }, [applyBalance, locale])
 
   useEffect(() => {
     void refresh()
     const timer = window.setInterval(() => { void refresh() }, WALLET_POLL_MS)
     return () => { window.clearInterval(timer) }
   }, [refresh])
+
+  useEffect(() => {
+    if (!labels?.canRotate) return
+    const timer = window.setInterval(() => {
+      setShowPoints(value => !value)
+    }, WALLET_TRIGGER_ROTATE_MS)
+    return () => { window.clearInterval(timer) }
+  }, [labels?.canRotate, labels?.balanceLabel, labels?.pointsLabel])
 
   useEffect(() => {
     if (!visible && open) setOpen(false)
@@ -90,10 +125,19 @@ export function WalletRoot({ wide, ctx, settings }: WalletRootProps) {
 
   if (!visible) return null
 
-  const display = amountLabel ?? t('nav')
-  const title = amountLabel === undefined
+  const mismatch = connected && !credentialAligned
+  const rotatingDisplay = labels?.canRotate && labels.pointsLabel !== undefined
+    ? (showPoints ? labels.pointsLabel : labels.balanceLabel)
+    : labels?.balanceLabel
+  const display = mismatch
+    ? t('reconfigureNeeded')
+    : (rotatingDisplay ?? t('nav'))
+  const ariaAmount = mismatch
+    ? t('reconfigureNeeded')
+    : (labels === undefined ? undefined : formatWalletTriggerAria(labels, locale))
+  const title = ariaAmount === undefined
     ? `${t('nav')} — ${t('visibilityHint')}`
-    : `${t('nav')} ${amountLabel} — ${t('visibilityHint')}`
+    : `${t('nav')} ${ariaAmount} — ${mismatch ? t('keyMismatchHint') : t('visibilityHint')}`
 
   return (
     <div className={css.layer}>
@@ -107,12 +151,20 @@ export function WalletRoot({ wide, ctx, settings }: WalletRootProps) {
         onClick={() => { setOpen(value => !value) }}
       >
         <WalletIcon size={wide ? 16 : 18} />
-        {wide && <span className={`${css.triggerLabel} ${css.amountLabel}`} id={titleId}>{display}</span>}
+        {wide && (
+          <span
+            key={display}
+            className={`${css.triggerLabel} ${css.amountLabel} ${css.triggerFade}`}
+            id={titleId}
+          >
+            {display}
+          </span>
+        )}
       </button>
       {open && (
         <div className={css.overlay} role="presentation">
           <div className={css.mask} aria-hidden="true" onClick={close} />
-          <WalletPanel locale={locale} onClose={close} onBalanceChange={setAmountLabel} />
+          <WalletPanel locale={locale} onClose={close} onBalanceChange={applyBalance} />
         </div>
       )}
     </div>
