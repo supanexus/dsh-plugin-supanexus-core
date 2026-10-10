@@ -1,9 +1,22 @@
 /** Stable device identity for harness credential idempotency. */
 import type { Context } from '@deepseek-ai/cordis';
 import type { Config } from '../config.ts';
-import { type SupaNexusSettings } from './namespace.ts';
-/** Read the current supanexus settings section or defaults. */
-export declare function readSettings(ctx: Context): SupaNexusSettings;
+/** Snapshot of volatile identity / connection prefs from live Config. */
+export interface SupaNexusSettings {
+    deviceName: string;
+    deviceId: string;
+    resolvedLine: string;
+    resolvedAt: number;
+    latencyMs: number;
+    pinnedLine: string;
+    apiKeyId: string;
+    keyPrefix: string;
+    connectedAt: number;
+    showWallet: boolean;
+    showBrand: boolean;
+}
+/** Read the current volatile Config section. */
+export declare function readSettings(config: Config): SupaNexusSettings;
 /** Ensure `deviceId` exists and return the effective device display name. */
 export declare function ensureDeviceIdentity(ctx: Context, config: Config): Promise<{
     deviceId: string;
@@ -14,6 +27,6 @@ export declare function rotateDeviceIdentity(ctx: Context, config: Config): Prom
     deviceId: string;
     deviceName: string;
 }>;
-/** Patch supanexus settings after a successful auth or probe. */
+/** Patch volatile Config fields after a successful auth or probe. */
 export declare function patchSettings(ctx: Context, patch: Partial<SupaNexusSettings>): Promise<void>;
 //# sourceMappingURL=device.d.ts.map

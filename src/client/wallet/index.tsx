@@ -1,7 +1,7 @@
 /** Wallet sidebar entry + modal. */
 
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-api-remotes/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts'
@@ -14,7 +14,7 @@ import { walletT } from './locales.ts'
  */
 export function registerWallet(
   ctx: ClientContext,
-  settings: SettingsScope<SupaNexusUiSettings>,
+  settings: ConfigForm<SupaNexusUiSettings>,
 ): void {
   ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({
     name: 'sidebar.footer.action',

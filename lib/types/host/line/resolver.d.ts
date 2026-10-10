@@ -19,7 +19,7 @@ export type FetchProbeOptions = {
 export declare function probeLine(line: SupaLine, timeoutMs: number, doFetch?: FetchProbe): Promise<LineProbeEntry>;
 /**
  * Resolve the auth / platform region line.
- * Priority (non-empty string wins): pinnedOverride → config.pinnedLine → settings.pinnedLine → probe.
+ * Priority (non-empty string wins): pinnedOverride → forcePinnedLine → pinnedLine → probe.
  * First auto probe also writes `pinnedLine` so the settings UI shows a selection.
  */
 export declare function resolveAuthLine(ctx: Context, config: Config, options?: {
@@ -34,7 +34,7 @@ export declare function resolveEnvLine(_ctx: Context, config: Config, options?: 
     force?: boolean;
     doFetch?: FetchProbe;
 }): Promise<ProbeReport>;
-/** Whether cordis config locks the region (UI should disable switching). */
+/** Whether the bundle patch locks the region (UI should disable switching). */
 export declare function isAuthLineLocked(config: Config): boolean;
 /** Test helper: clear env-line probe cache. */
 export declare function resetLineCache(): void;

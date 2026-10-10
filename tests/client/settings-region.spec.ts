@@ -4,10 +4,10 @@ import { readActiveLineId } from '../../src/client/settings/useShowWalletPref.ts
 import { settingsCardT } from '../../src/client/settings/locales.ts'
 import { fetchLineStatus } from '../../src/client/settings/line-wire.ts'
 import { PINNED_LINE_FIELD } from '../../src/shared/settings-contract.ts'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type { SupaNexusUiSettings } from '../../src/shared/settings-contract.ts'
 
-function fakeScope(value: Partial<SupaNexusUiSettings>): SettingsScope<SupaNexusUiSettings> {
+function fakeScope(value: Partial<SupaNexusUiSettings>): ConfigForm<SupaNexusUiSettings> {
   return {
     getSnapshot: () => ({
       status: 'ready',
@@ -20,7 +20,7 @@ function fakeScope(value: Partial<SupaNexusUiSettings>): SettingsScope<SupaNexus
     }),
     subscribe: () => () => {},
     set: async () => {},
-  } as unknown as SettingsScope<SupaNexusUiSettings>
+  } as unknown as ConfigForm<SupaNexusUiSettings>
 }
 
 describe('settings region helpers', () => {

@@ -20,7 +20,7 @@ describe('shouldShowWallet', () => {
     expect(shouldShowWallet(true, 'supanexus', false)).toBe(false)
   })
 
-  it('defaults showWallet to false when omitted', () => {
-    expect(shouldShowWallet(true, 'supanexus')).toBe(false)
+  it('defaults showWallet to true when omitted', () => {
+    expect(shouldShowWallet(true, 'supanexus')).toBe(true)
   })
 })

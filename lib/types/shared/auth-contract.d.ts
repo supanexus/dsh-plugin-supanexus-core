@@ -14,8 +14,8 @@ export interface ProviderModelEntry {
     /** When set, written into `llm-pi-ai` as `models[].input` (Vision gate). */
     readonly input?: readonly ProviderModelInput[];
     /**
-     * When set, written as `models[].reasoningEfforts` so Off maps to wire `none`
-     * and High/Max are selectable (gateway upgrades GPT to Responses upstream).
+     * When set, written as `models[].reasoningEfforts`.
+     * GPT-class maps omit Off (no wire `none`); other reasoning models use `off: null`.
      */
     readonly reasoningEfforts?: Readonly<Record<string, string | null>>;
 }

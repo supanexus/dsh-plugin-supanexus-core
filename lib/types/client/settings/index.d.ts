@@ -1,7 +1,13 @@
-/** Register the SupaNexus card on the Plugins settings tab. */
+/** Register the SupaNexus card on the Plugins page. */
 import type { Context as ClientContext } from '@deepseek-ai/cordis';
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client';
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client';
 import { type SupaNexusUiSettings } from '../../shared/settings-contract.ts';
-/** Register `settings.plugin.item` keyed by the Host `supanexus` namespace. */
-export declare function registerPluginSettings(ctx: ClientContext, scope: SettingsScope<SupaNexusUiSettings>): void;
+import { zh } from './locales.ts';
+declare module '@deepseek-ai/dsh-client-ui-slots' {
+    interface LocaleNamespaceMap {
+        'supanexus.settings': keyof typeof zh;
+    }
+}
+/** Register `plugins.item` while Host serves the SupaNexus volatile Config. */
+export declare function registerPluginSettings(ctx: ClientContext, scope: ConfigForm<SupaNexusUiSettings>): void;
 //# sourceMappingURL=index.d.ts.map

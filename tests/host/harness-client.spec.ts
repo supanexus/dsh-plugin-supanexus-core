@@ -170,8 +170,9 @@ describe('harness-client refresh + wallet', () => {
       id: 'openai/gpt-5.6-luna',
       contextWindow: 1_050_000,
       input: ['text', 'image'],
-      reasoningEfforts: expect.objectContaining({ off: 'none', high: 'high' }),
+      reasoningEfforts: expect.objectContaining({ low: 'low', high: 'high', max: 'max' }),
     })
+    expect(models[0]?.reasoningEfforts).not.toHaveProperty('off')
     expect(models[1]).toEqual({
       id: 'deepseek/deepseek-flash',
       name: 'DeepSeek Flash',

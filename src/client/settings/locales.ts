@@ -54,6 +54,9 @@ const EN: SettingsCardCopy = {
   collapse: 'Collapse',
 }
 
+export const zh = ZH
+export const en = EN
+
 export function settingsCardT(locale: string | undefined): (key: keyof SettingsCardCopy) => string {
   const table = locale?.toLowerCase().startsWith('zh') ? ZH : EN
   return (key) => table[key]

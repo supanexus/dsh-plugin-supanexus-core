@@ -19,7 +19,7 @@ export interface LineStatusResponse {
   readonly activeLineId: string
   readonly source: AuthLineSource
   readonly latencyMs: number
-  /** True when cordis `config.pinnedLine` locks the region. */
+  /** True when cordis `config.forcePinnedLine` locks the region. */
   readonly locked: boolean
 }
 

@@ -32,6 +32,7 @@ describe('provider-write', () => {
           apiKeyEnv: CREDENTIAL_REF,
           api: PROVIDER_API,
           baseURL: 'http://127.0.0.1:31002/v1',
+          compat: { supportsDeveloperRole: false },
           models: [{ id: 'supanexus/default', name: 'Default' }],
         },
       }],
@@ -73,7 +74,7 @@ describe('provider-write', () => {
         name: 'GPT-5.6 Luna',
         contextWindow: 1_050_000,
         input: ['text', 'image'],
-        reasoningEfforts: { off: 'none', high: 'high' },
+        reasoningEfforts: { low: 'low', high: 'high' },
       }],
     })
     const value = mutate.mock.calls[0]?.[1]?.[0]?.value as {
@@ -82,7 +83,8 @@ describe('provider-write', () => {
     }
     expect(value.api).toBe(PROVIDER_API)
     expect(value.models[0]?.contextWindow).toBe(1_050_000)
-    expect(value.models[0]?.reasoningEfforts?.off).toBe('none')
+    expect(value.models[0]?.reasoningEfforts?.low).toBe('low')
+    expect(value.models[0]?.reasoningEfforts?.high).toBe('high')
   })
 
   it('retries once on settings-conflict', async () => {

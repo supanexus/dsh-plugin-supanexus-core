@@ -91,7 +91,7 @@ function pinnedReport(line: SupaLine, source: AuthLineSource, now: number): Prob
 
 /**
  * Resolve the auth / platform region line.
- * Priority (non-empty string wins): pinnedOverride → config.pinnedLine → settings.pinnedLine → probe.
+ * Priority (non-empty string wins): pinnedOverride → forcePinnedLine → pinnedLine → probe.
  * First auto probe also writes `pinnedLine` so the settings UI shows a selection.
  */
 export async function resolveAuthLine(
@@ -99,7 +99,7 @@ export async function resolveAuthLine(
   config: Config,
   options: { pinnedOverride?: string; doFetch?: FetchProbe } = {},
 ): Promise<ProbeReport> {
-  const settings = readSettings(ctx)
+  const settings = readSettings(config)
   const now = Date.now()
 
   const override = firstNonEmpty(options.pinnedOverride)
@@ -115,10 +115,10 @@ export async function resolveAuthLine(
     return pinnedReport(line, 'user', now)
   }
 
-  const fromConfig = firstNonEmpty(config.pinnedLine)
-  if (fromConfig.length > 0) {
-    const line = findLine(config.lines, fromConfig)
-    if (line === undefined) throw new Error(`未知线路：${fromConfig}`)
+  const fromLock = firstNonEmpty(config.forcePinnedLine)
+  if (fromLock.length > 0) {
+    const line = findLine(config.lines, fromLock)
+    if (line === undefined) throw new Error(`未知线路：${fromLock}`)
     await patchSettings(ctx, {
       resolvedLine: line.id,
       resolvedAt: now,
@@ -183,9 +183,9 @@ export async function resolveEnvLine(
   return { winner, entries }
 }
 
-/** Whether cordis config locks the region (UI should disable switching). */
+/** Whether the bundle patch locks the region (UI should disable switching). */
 export function isAuthLineLocked(config: Config): boolean {
-  return firstNonEmpty(config.pinnedLine).length > 0
+  return firstNonEmpty(config.forcePinnedLine).length > 0
 }
 
 /** Test helper: clear env-line probe cache. */

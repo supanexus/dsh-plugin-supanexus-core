@@ -133,7 +133,7 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
     fetch: async () => {
       try {
         const connected = await isApiKeyConfigured(ctx)
-        const settings = readSettings(ctx)
+        const settings = readSettings(config)
         const credentialAligned = connected
           ? await isCredentialAligned(ctx, settings.keyPrefix)
           : true
@@ -163,7 +163,7 @@ export function registerWalletRoutes(ctx: Context, config: Config): void {
           return jsonResponse(apiErr('尚未配置 SupaNexus，请先完成快速配置。', WALLET_ERROR.notConnected), 400)
         }
 
-        const settings = readSettings(ctx)
+        const settings = readSettings(config)
         const aligned = await isCredentialAligned(ctx, settings.keyPrefix)
         if (!aligned) {
           return jsonResponse(

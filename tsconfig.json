@@ -21,6 +21,7 @@
     { "path": "../../../../engine/packages/client/ui-renderer" },
     { "path": "../../../../engine/packages/client/ui-conversation" },
     { "path": "../../../../engine/packages/client/ui-model-selection" },
+    { "path": "../../../../engine/packages/client/ui-session" },
     { "path": "../../../../engine/packages/client/ui-sidebar" },
     { "path": "../../../../engine/packages/client/ui-settings" },
     { "path": "../../../../engine/packages/client/ui-settings-models" },

@@ -16,5 +16,7 @@ export interface SettingsCardCopy {
     readonly expand: string;
     readonly collapse: string;
 }
+export declare const zh: SettingsCardCopy;
+export declare const en: SettingsCardCopy;
 export declare function settingsCardT(locale: string | undefined): (key: keyof SettingsCardCopy) => string;
 //# sourceMappingURL=locales.d.ts.map

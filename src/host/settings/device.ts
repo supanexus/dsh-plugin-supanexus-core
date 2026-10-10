@@ -4,18 +4,42 @@ import { randomUUID } from 'node:crypto'
 import { hostname } from 'node:os'
 import type { Context } from '@deepseek-ai/cordis'
 import type { Config } from '../config.ts'
-import {
-  DEFAULT_SETTINGS,
-  SUPANEXUS_NS,
-  type SupaNexusSettings,
-} from './namespace.ts'
 
-/** Read the current supanexus settings section or defaults. */
-export function readSettings(ctx: Context): SupaNexusSettings {
-  const settings = ctx.get('settings')
-  if (settings === undefined) return { ...DEFAULT_SETTINGS }
-  const section = settings.get(SUPANEXUS_NS) as SupaNexusSettings | undefined
-  return section === undefined ? { ...DEFAULT_SETTINGS } : { ...section }
+/** Snapshot of volatile identity / connection prefs from live Config. */
+export interface SupaNexusSettings {
+  deviceName: string
+  deviceId: string
+  resolvedLine: string
+  resolvedAt: number
+  latencyMs: number
+  pinnedLine: string
+  apiKeyId: string
+  keyPrefix: string
+  connectedAt: number
+  showWallet: boolean
+  showBrand: boolean
+}
+
+/** Read the current volatile Config section. */
+export function readSettings(config: Config): SupaNexusSettings {
+  return {
+    deviceName: config.deviceName.get(),
+    deviceId: config.deviceId.get(),
+    resolvedLine: config.resolvedLine.get(),
+    resolvedAt: config.resolvedAt.get(),
+    latencyMs: config.latencyMs.get(),
+    pinnedLine: config.pinnedLine.get(),
+    apiKeyId: config.apiKeyId.get(),
+    keyPrefix: config.keyPrefix.get(),
+    connectedAt: config.connectedAt.get(),
+    showWallet: config.showWallet.get(),
+    showBrand: config.showBrand.get(),
+  }
+}
+
+/** Profile entry id used by `settings.update` (Loader row id). */
+function entryIdOf(ctx: Context): string | undefined {
+  return ctx.fiber.entry?.options.id
 }
 
 /** Ensure `deviceId` exists and return the effective device display name. */
@@ -24,9 +48,10 @@ export async function ensureDeviceIdentity(
   config: Config,
 ): Promise<{ deviceId: string; deviceName: string }> {
   const settings = ctx.get('settings')
-  const current = readSettings(ctx)
-  const deviceName = config.deviceName.length > 0
-    ? config.deviceName
+  const current = readSettings(config)
+  const configuredName = config.deviceName.get()
+  const deviceName = configuredName.length > 0
+    ? configuredName
     : current.deviceName.length > 0
       ? current.deviceName
       : hostname()
@@ -36,8 +61,9 @@ export async function ensureDeviceIdentity(
   }
 
   const deviceId = randomUUID()
-  if (settings !== undefined) {
-    await settings.update(SUPANEXUS_NS, { deviceId, deviceName })
+  const entry = entryIdOf(ctx)
+  if (settings !== undefined && entry !== undefined) {
+    await settings.update(entry, { deviceId, deviceName })
   }
   return { deviceId, deviceName }
 }
@@ -48,26 +74,29 @@ export async function rotateDeviceIdentity(
   config: Config,
 ): Promise<{ deviceId: string; deviceName: string }> {
   const settings = ctx.get('settings')
-  const current = readSettings(ctx)
-  const deviceName = config.deviceName.length > 0
-    ? config.deviceName
+  const current = readSettings(config)
+  const configuredName = config.deviceName.get()
+  const deviceName = configuredName.length > 0
+    ? configuredName
     : current.deviceName.length > 0
       ? current.deviceName
       : hostname()
 
   const deviceId = randomUUID()
-  if (settings !== undefined) {
-    await settings.update(SUPANEXUS_NS, { deviceId, deviceName })
+  const entry = entryIdOf(ctx)
+  if (settings !== undefined && entry !== undefined) {
+    await settings.update(entry, { deviceId, deviceName })
   }
   return { deviceId, deviceName }
 }
 
-/** Patch supanexus settings after a successful auth or probe. */
+/** Patch volatile Config fields after a successful auth or probe. */
 export async function patchSettings(
   ctx: Context,
   patch: Partial<SupaNexusSettings>,
 ): Promise<void> {
   const settings = ctx.get('settings')
-  if (settings === undefined) return
-  await settings.update(SUPANEXUS_NS, patch)
+  const entry = entryIdOf(ctx)
+  if (settings === undefined || entry === undefined) return
+  await settings.update(entry, patch)
 }

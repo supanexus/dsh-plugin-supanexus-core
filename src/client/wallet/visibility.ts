@@ -9,7 +9,7 @@ import { PROVIDER_ROUTE_ID } from '../../shared/provider.ts'
 export function shouldShowWallet(
   connected: boolean,
   provider: string | null | undefined,
-  showWallet = false,
+  showWallet = true,
 ): boolean {
   return showWallet && connected && provider === PROVIDER_ROUTE_ID
 }

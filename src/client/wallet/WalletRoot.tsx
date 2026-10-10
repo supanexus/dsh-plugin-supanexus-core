@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useState } from 'react'
 import type { PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts'
@@ -35,7 +35,7 @@ function WalletIcon({ size }: { readonly size: number }) {
 
 export interface WalletRootProps extends PropsRuntime<'sidebar.footer.action'> {
   readonly ctx: ClientContext
-  readonly settings: SettingsScope<SupaNexusUiSettings>
+  readonly settings: ConfigForm<SupaNexusUiSettings>
 }
 
 /**

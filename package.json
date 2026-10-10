@@ -1,7 +1,7 @@
 {
   "name": "@supanexus/dsh-plugin-supanexus-core",
   "description": "SupaNexus platform core: brand UI, OAuth quick setup, dual-line model provider, and app plugin market",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -44,7 +44,13 @@
     "publish": {
       "github": true,
       "repo": "supanexus/dsh-plugin-supanexus-core",
-      "topics": ["dsh-plugin", "supanexus", "deepseek-harness", "oauth", "plugin-market"]
+      "topics": [
+        "dsh-plugin",
+        "supanexus",
+        "deepseek-harness",
+        "oauth",
+        "plugin-market"
+      ]
     }
   },
   "dsh": {
@@ -56,9 +62,10 @@
         "@deepseek-ai/dsh-client-ui-conversation",
         "@deepseek-ai/dsh-client-ui-renderer",
         "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-session",
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-settings-models",
-        "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "@deepseek-ai/dsh-client-ui-plugin-manager",
         "@deepseek-ai/dsh-client-ui-model-selection"
       ],
       "platform": "web"
@@ -85,9 +92,10 @@
     "@deepseek-ai/dsh-client-ui-conversation": "*",
     "@deepseek-ai/dsh-client-ui-model-selection": "*",
     "@deepseek-ai/dsh-client-ui-renderer": "*",
+    "@deepseek-ai/dsh-client-ui-session": "*",
     "@deepseek-ai/dsh-client-ui-settings": "*",
     "@deepseek-ai/dsh-client-ui-settings-models": "*",
-    "@deepseek-ai/dsh-client-ui-settings-plugins": "*",
+    "@deepseek-ai/dsh-client-ui-plugin-manager": "*",
     "@deepseek-ai/dsh-client-ui-sidebar": "*",
     "@deepseek-ai/dsh-client-locale": "*",
     "@deepseek-ai/dsh-credentials": "*",
@@ -97,22 +105,57 @@
     "@deepseek-ai/schemastery": "*"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/cordis": { "optional": true },
-    "@deepseek-ai/dsh-api-remotes": { "optional": true },
-    "@deepseek-ai/dsh-client-connection": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-conversation": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-model-selection": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-renderer": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-settings": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-settings-models": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-settings-plugins": { "optional": true },
-    "@deepseek-ai/dsh-client-ui-sidebar": { "optional": true },
-    "@deepseek-ai/dsh-client-locale": { "optional": true },
-    "@deepseek-ai/dsh-credentials": { "optional": true },
-    "@deepseek-ai/dsh-host-webserver": { "optional": true },
-    "@deepseek-ai/dsh-invariants": { "optional": true },
-    "@deepseek-ai/dsh-settings": { "optional": true },
-    "@deepseek-ai/schemastery": { "optional": true }
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-api-remotes": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-connection": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-conversation": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-model-selection": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-renderer": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-session": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-settings-models": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-plugin-manager": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-sidebar": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-locale": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-credentials": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-host-webserver": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-invariants": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "file:../../../../engine/vendor/cordis",
@@ -123,9 +166,10 @@
     "@deepseek-ai/dsh-client-ui-model-selection": "file:../../../../engine/packages/client/ui-model-selection",
     "@deepseek-ai/dsh-client-ui-primitives": "file:../../../../engine/packages/client/ui-primitives",
     "@deepseek-ai/dsh-client-ui-renderer": "file:../../../../engine/packages/client/ui-renderer",
+    "@deepseek-ai/dsh-client-ui-session": "file:../../../../engine/packages/client/ui-session",
     "@deepseek-ai/dsh-client-ui-settings": "file:../../../../engine/packages/client/ui-settings",
     "@deepseek-ai/dsh-client-ui-settings-models": "file:../../../../engine/packages/client/ui-settings-models",
-    "@deepseek-ai/dsh-client-ui-settings-plugins": "file:../../../../engine/packages/client/ui-settings-plugins",
+    "@deepseek-ai/dsh-client-ui-plugin-manager": "file:../../../../engine/packages/client/ui-plugin-manager",
     "@deepseek-ai/dsh-client-ui-sidebar": "file:../../../../engine/packages/client/ui-sidebar",
     "@deepseek-ai/dsh-credentials": "file:../../../../engine/packages/credentials/credentials",
     "@deepseek-ai/dsh-host-webserver": "file:../../../../engine/packages/host/webserver",

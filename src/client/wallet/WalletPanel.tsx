@@ -166,17 +166,6 @@ export function WalletPanel({ locale, onClose, onBalanceChange }: WalletPanelPro
                 </p>
               ) : null}
 
-              <p className={css.balanceLabel}>{t('planLabel')}</p>
-              <p className={data.planName.length > 0 ? css.balanceSecondary : css.orgRow}>
-                {data.planName.length > 0 ? data.planName : t('noPlan')}
-              </p>
-              {data.subscriptionStatus.length > 0 ? (
-                <p className={css.orgRow}>
-                  {t('subscriptionStatusLabel')}
-                  {': '}
-                  {data.subscriptionStatus}
-                </p>
-              ) : null}
               {resetAt !== undefined ? (
                 <p className={css.orgRow}>
                   {t('resetAtLabel')}

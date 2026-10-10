@@ -1,7 +1,7 @@
 /** Brand slot registration for SupaNexus. */
 
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
-import type { SettingsScope } from '@deepseek-ai/dsh-client-ui-settings/client'
+import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
 import type { SupaNexusUiSettings } from '../../shared/settings-contract.ts'
 import { readShowBrand } from '../settings/useShowWalletPref.ts'
 import { SupaNexusBrandMark, SupaNexusBrandNameSlot } from './Brand.tsx'
@@ -13,7 +13,7 @@ import { clearTabBranding, watchTabBrandingPatches } from './patchShellBranding.
  */
 export function registerBrand(
   ctx: ClientContext,
-  scope: SettingsScope<SupaNexusUiSettings>,
+  scope: ConfigForm<SupaNexusUiSettings>,
 ): void {
   ctx.effect(() => {
     let disposeSlots: (() => void) | undefined

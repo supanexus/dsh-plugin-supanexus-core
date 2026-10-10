@@ -25,7 +25,7 @@ export const inject = [
   'remote.pluginInventory',
   'locale',
   'connection',
-  'settingsScope',
+  'configForms',
 ]
 
 /**
@@ -33,9 +33,7 @@ export const inject = [
  * @param ctx - Client root context.
  */
 export function apply(ctx: ClientContext): void {
-  const settings = ctx.settingsScope.bind<SupaNexusUiSettings>({
-    namespace: SUPANEXUS_SETTINGS_NS,
-  })
+  const settings = ctx.configForms.get<SupaNexusUiSettings>(SUPANEXUS_SETTINGS_NS)
   registerBrand(ctx, settings)
   registerHero(ctx, settings)
   registerQuickSetup(ctx)

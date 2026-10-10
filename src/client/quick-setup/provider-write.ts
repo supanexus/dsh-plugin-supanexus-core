@@ -55,6 +55,8 @@ export async function writeSupaNexusProvider(
     apiKeyEnv: CREDENTIAL_REF,
     api: PROVIDER_API,
     baseURL: input.baseURL,
+    // SupaNexus gateway rejects OpenAI's `developer` role; keep system prompts as `system`.
+    compat: { supportsDeveloperRole: false },
     models: input.models.map(model => ({
       id: model.id,
       ...model.name === undefined ? {} : { name: model.name },

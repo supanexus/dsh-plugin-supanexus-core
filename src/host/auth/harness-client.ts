@@ -2,7 +2,7 @@
 
 import { dataPlaneBase, harnessBase, type SupaLine } from '../../shared/line.ts'
 import type { ProviderModelEntry } from '../../shared/auth-contract.ts'
-import { GPT_REASONING_EFFORTS, modelNeedsReasoningEfforts } from '../../shared/reasoning-efforts.ts'
+import { reasoningEffortsForModel } from '../../shared/reasoning-efforts.ts'
 
 interface HarnessEnvelope<T> {
   readonly code: string
@@ -271,9 +271,7 @@ export async function listModels(
   const models = payload.data ?? []
   if (models.length === 0) return FALLBACK_MODELS
   return models.map(model => {
-    const supported = model.supported_parameters ?? []
-    const reasoning =
-      modelNeedsReasoningEfforts(model.id) || supported.includes('reasoning')
+    const efforts = reasoningEffortsForModel(model.id, model.supported_parameters)
     return {
       id: model.id,
       ...model.name === undefined ? {} : { name: model.name },
@@ -281,7 +279,7 @@ export async function listModels(
         ? { contextWindow: model.context_length }
         : {},
       input: inputFromModalities(model.architecture?.input_modalities),
-      ...reasoning ? { reasoningEfforts: { ...GPT_REASONING_EFFORTS } } : {},
+      ...efforts === undefined ? {} : { reasoningEfforts: { ...efforts } },
     }
   })
 }

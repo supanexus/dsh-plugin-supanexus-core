@@ -15,6 +15,7 @@
             harnessOrigin: https://gateway-harness.supanexus.io
             pluginCatalogOrigin: https://gateway-client.supanexus.io
             consoleOrigin: https://console.supanexus.io
+        forcePinnedLine: ''
         pinnedLine: ''
         probeTimeoutMs: 2500
         probeCacheTtlMs: 600000
